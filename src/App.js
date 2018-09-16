@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { withSiteData } from "react-static";
+import request from "superagent";
+import { Formik } from "formik";
 import { hot } from "react-hot-loader";
 
 import "./tachyons.min.css";
@@ -54,9 +57,10 @@ const About = props => {
   );
 };
 
-const Order = props => {
+const Order = ({ formUrl }) => {
   return (
     <div className="ph4 tr pb4 near-white">
+      <a name="order" />
       <h1 className="ttu mv0 pv4 tracked-mega">
         <p className="f1 mv0">Order</p>
         <p className="f4 mv0">Here:</p>
@@ -69,18 +73,59 @@ const Order = props => {
         amazing coffee. We promise, no shitty marketing crap!
       </p>
       <div className="tr">
-        <p>
-          <input
-            className="f4 input-reset br-pill ph2 ba b--karana w-50"
-            placeholder="your@coffee.com"
-          />
-        </p>
-        <a
-          name="order"
-          className="f5 link dim br-pill ph3 pv2 mb2 dib black bg-karana-light"
+        <Formik
+          initialValues={{ email: "" }}
+          validate={values => {
+            let errors = {};
+            if (!values.email) {
+              errors.email = "Required";
+            } else if (
+              !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+            ) {
+              errors.email = "Invalid email address";
+            }
+            return errors;
+          }}
+          onSubmit={async ({ email }) => {
+            try {
+              const payload = await request.post(formUrl).send({
+                email
+              });
+              console.log(payload);
+            } catch (error) {
+              console.log(error);
+            }
+          }}
         >
-          Send
-        </a>
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit
+          }) => (
+            <form onSubmit={handleSubmit}>
+              <input
+                name="email"
+                onChange={handleChange}
+                value={values.email}
+                className="f4 input-reset br-pill ph2 ba b--karana w-50"
+                onBlur={handleBlur}
+                placeholder="your@coffee.com"
+              />
+              <p className="red">
+                {errors.email && touched.email && errors.email}
+              </p>
+              <button
+                type="submit"
+                className="button-reset ba f5 link dim br-pill ph3 pv2 mb2 dib black bg-karana-light"
+              >
+                Send
+              </button>
+            </form>
+          )}
+        </Formik>
       </div>
     </div>
   );
@@ -88,6 +133,7 @@ const Order = props => {
 
 class App extends Component {
   render() {
+    const { formUrl } = this.props;
     return (
       <div className="helvetica dark-gray">
         <Screen half className="bg-karana-light">
@@ -97,11 +143,11 @@ class App extends Component {
           <About />
         </Screen>
         <Screen half className="bg-karana">
-          <Order />
+          <Order formUrl={formUrl} />
         </Screen>
       </div>
     );
   }
 }
 
-export default hot(module)(App);
+export default hot(module)(withSiteData(App));
