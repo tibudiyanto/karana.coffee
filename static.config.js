@@ -6,7 +6,6 @@ export default {
   getSiteData: () => {
     return {
       title: "Karana Coffee",
-      tahik: "kontol",
       formUrl: process.env.FORM_URL || "google.com"
     };
   },
