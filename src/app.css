@@ -1,0 +1,29 @@
+.bg-karana-light {
+  background: #cfe4db;
+}
+
+.karana-light {
+  color: #cfe4db;
+}
+
+.bg-karana {
+  background: #11597f;
+}
+
+.b--karana {
+  border-color: #11597f;
+}
+
+.bg-gradient {
+  background: #003973; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to bottom,
+    #cfe4db,
+    #11597f
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to bottom,
+    #cfe4db,
+    #11597f
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
